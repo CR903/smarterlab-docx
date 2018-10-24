@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	"smarterlab_docx/docx"
+
+	"github.com/CR903/smarterlab-docx/docx"
 )
 
 func main() {
