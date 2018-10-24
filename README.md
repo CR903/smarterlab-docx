@@ -1,4 +1,4 @@
-# smarterlab_doc
+# smarterlab-doc
 
 1. Support docx template substitution
 2. Support OOXML
