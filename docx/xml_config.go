@@ -74,8 +74,8 @@ const (
 	//XMLTableHead ...
 	XMLTableHead = `<w:tbl>
 	<w:tblPr>
-		<w:tblStyle w:val="ableGrid"/>
-		<w:tblW w:w="0" w:type="pct"/>
+		<w:tblStyle w:val="a3"/>
+		<w:tblW w:w="0" w:type="auto"/>
 	</w:tblPr>
 `
 	//XMLTableNoHead == 没有表头的样式把table top line remove掉
@@ -83,7 +83,6 @@ const (
 	<w:tblPr>
 		<w:tblStyle w:val="a3"/>
 		<w:tblW w:w="0" w:type="auto"/>			
-		<w:tblLook w:firstColumn="1" w:firstRow="1" w:lastColumn="0" w:lastRow="0" w:noHBand="0" w:noVBand="1" w:val="04A0"/>
 	</w:tblPr>
 `
 	//XMLTableInTableHead == 表中表的样式头
@@ -123,6 +122,7 @@ const (
 	<w:tcPr>
 		<w:tcW w:w="%s" w:type="dxa"/>
 		<w:gridSpan w:val="%s"/>
+		<w:textAlignment w:val="center"/>
 		<w:vMerge w:val="restart"/>
 	</w:tcPr>
 `
@@ -146,6 +146,7 @@ const (
 	XMLTableInTableMergeSTD = `<w:tc>
 	<w:tcPr>
 		<w:tcW w:w="%s" w:type="dxa"/>
+		<w:textAlignment w:val="center"/>
 		<w:vMerge w:val="restart"/>
 	</w:tcPr>
 `

@@ -16,6 +16,7 @@ func main() {
 	docxObj := r.Editable()
 	docxObj.Replace("DETECTNUMBER", "JC2018001", -1)
 
+	// table1
 	row1TD1Key := docx.NewTableTD([]interface{}{docx.NewText("委托单位")}, map[string]interface{}{"tdbg": 1, "tdw": 2095})
 	row1TD1Value := docx.NewTableTD([]interface{}{docx.NewText("立为科技")}, map[string]interface{}{"tdbg": 1, "tdw": 2095})
 	row1TD2Key := docx.NewTableTD([]interface{}{docx.NewText("联系人")}, map[string]interface{}{"tdbg": 1, "tdw": 2095})
@@ -57,6 +58,9 @@ func main() {
 	row81TD1Key := docx.NewTableTD([]interface{}{docx.NewText("")}, map[string]interface{}{"tdm": 2})
 	row81TD1Value := docx.NewTableTD([]interface{}{docx.NewText("气:测试检测项, 四氯化碳")}, map[string]interface{}{"tdbg": 3})
 
+	row82TD1Key := docx.NewTableTD([]interface{}{docx.NewText("")}, map[string]interface{}{"tdm": 2})
+	row82TD1Value := docx.NewTableTD([]interface{}{docx.NewText("气:测试检测项, 四氯化碳")}, map[string]interface{}{"tdbg": 3})
+
 	row9TD1Key := docx.NewTableTD([]interface{}{docx.NewText("检测标准/检测方法")}, nil)
 	row9TD1Value := docx.NewTableTD([]interface{}{docx.NewText("标准1/标准1, 标准1/标准1, 测试检测标准一号/测试检测标准一号, 标准1/标准1")}, map[string]interface{}{"tdbg": 3, "tdw": 0})
 
@@ -93,6 +97,7 @@ func main() {
 		{row7TD1Key, row7TD1Value, row7TD2Key, row7TD2Value},
 		{row8TD1Key, row8TD1Value},
 		{row81TD1Key, row81TD1Value},
+		{row82TD1Key, row82TD1Value},
 		{row9TD1Key, row9TD1Value},
 		{row10TD1Key},
 		{row11TD1Key, row11TD1Value},
@@ -105,6 +110,37 @@ func main() {
 	if err1 != nil {
 		panic(err1)
 	}
+
+	// Table2
+	// table := make([][]*docx.TableTD, 0)
+	// tableHead := []*docx.TableTHead{
+	// 	&docx.TableTHead{TData: docx.NewText("样品编号"), TDW: 823},
+	// 	&docx.TableTHead{TData: docx.NewText("样品名称"), TDW: 823},
+	// 	&docx.TableTHead{TData: docx.NewText("检测项"), TDW: 823},
+	// 	&docx.TableTHead{TData: docx.NewText("检测标准"), TDW: 823},
+	// 	&docx.TableTHead{TData: docx.NewText("限值要求"), TDW: 823},
+	// 	&docx.TableTHead{TData: docx.NewText("截止日期"), TDW: 823},
+	// 	&docx.TableTHead{TData: docx.NewText("检验组"), TDW: 823},
+	// 	&docx.TableTHead{TData: docx.NewText("检验人"), TDW: 823},
+	// 	&docx.TableTHead{TData: docx.NewText("备注"), TDW: 823},
+	// 	&docx.TableTHead{TData: docx.NewText("状态"), TDW: 823},
+	// }
+
+	// for t := 1; t <= 10; t++ {
+
+	// 	var td = make([]*docx.TableTD, 0)
+	// 	for i := 1; i <= 10; i++ {
+	// 		tdValue := fmt.Sprintf("列：%s", strconv.Itoa(i))
+	// 		row1TD1Key := docx.NewTableTD([]interface{}{docx.NewText(tdValue)}, map[string]interface{}{"tdbg": 1, "tdw": 823})
+	// 		td = append(td, row1TD1Key)
+	// 	}
+	// 	table = append(table, td)
+	// }
+
+	// _, err1 := docx.NewTable(docxObj, "DETECTCONTENT", true, table, tableHead, true)
+	// if err1 != nil {
+	// 	panic(err1)
+	// }
 	docxObj.WriteToFile("template_new.docx")
 	r.Close()
 	fmt.Println("Success")

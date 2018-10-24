@@ -84,7 +84,7 @@ type Table struct {
 	//Table data except table head
 	TableBody [][]*TableTD `json:"tablebody"`
 	//Table head data
-	TableHead [][]*TableTHead `json:"tablehead"`
+	TableHead []*TableTHead `json:"tablehead"`
 	//Thcenter set table head center word
 	Thcenter bool `json:"thcenter"`
 }
@@ -203,59 +203,43 @@ func (d *Docx) ReplaceTable(table *Table) error {
 	if tableHead != nil {
 		XMLTable.WriteString(XMLTableHead)
 		XMLTable.WriteString(XMLTableGridBegin)
-		for i, h := range tableHead {
-			gcw := fmt.Sprintf(XMLTableGridCol, strconv.FormatInt(int64(h[i].TDW), 10))
+		for _, h := range tableHead {
+			gcw := fmt.Sprintf(XMLTableGridCol, strconv.FormatInt(int64(h.TDW), 10))
 			XMLTable.WriteString(gcw)
 		}
 		XMLTable.WriteString(XMLTableGridEnd)
 
 		XMLTable.WriteString(XMLTableHeadTR)
-		for j, rowdata := range tableHead {
-			thw := fmt.Sprintf(XMLHeadTableTDBegin, strconv.FormatInt(int64(rowdata[j].TDW), 10))
+		for _, rowdata := range tableHead {
+			thw := fmt.Sprintf(XMLHeadTableTDBegin, strconv.FormatInt(int64(rowdata.TDW), 10))
 			XMLTable.WriteString(thw)
-			if inline {
-				if table.Thcenter {
-					XMLTable.WriteString(XMLHeadTableTDBegin2C)
+			if table.Thcenter {
+				XMLTable.WriteString(XMLHeadTableTDBegin2C)
+			} else {
+				XMLTable.WriteString(XMLHeadTableTDBegin2)
+			}
+			if text, ok := rowdata.TData.(*Text); ok {
+				//not
+				color := text.Color
+				size := text.Size
+				word := text.Words
+				var data string
+				if text.IsCenter {
+					if text.Isbold {
+						data = fmt.Sprintf(XMLHeadtableTDTextBC, color, size, size, word)
+					} else {
+						data = fmt.Sprintf(XMLHeadtableTDTextC, color, size, size, word)
+					}
 				} else {
-					XMLTable.WriteString(XMLHeadTableTDBegin2)
-				}
-			}
-			for _, rowEle := range rowdata {
-				if !inline {
-					if table.Thcenter {
-						XMLTable.WriteString(XMLHeadTableTDBegin2C)
+					if text.Isbold {
+						data = fmt.Sprintf(XMLHeadtableTDTextB, color, size, size, word)
 					} else {
-						XMLTable.WriteString(XMLHeadTableTDBegin2)
+						data = fmt.Sprintf(XMLHeadtableTDText, color, size, size, word)
 					}
 				}
-				if text, ok := rowEle.TData.(*Text); ok {
-					//not
-					color := text.Color
-					size := text.Size
-					word := text.Words
-					var data string
-					if text.IsCenter {
-						if text.Isbold {
-							data = fmt.Sprintf(XMLHeadtableTDTextBC, color, size, size, word)
-						} else {
-							data = fmt.Sprintf(XMLHeadtableTDTextC, color, size, size, word)
-						}
-					} else {
-						if text.Isbold {
-							data = fmt.Sprintf(XMLHeadtableTDTextB, color, size, size, word)
-						} else {
-							data = fmt.Sprintf(XMLHeadtableTDText, color, size, size, word)
-						}
-					}
-					XMLTable.WriteString(data)
-				}
-				if !inline {
-					XMLTable.WriteString(XMLIMGtail)
-				}
+				XMLTable.WriteString(data)
 			}
-			if inline {
-				XMLTable.WriteString(XMLIMGtail)
-			}
+			XMLTable.WriteString(XMLIMGtail)
 			XMLTable.WriteString(XMLHeadTableTDEnd)
 		}
 		XMLTable.WriteString(XMLTableEndTR)
@@ -308,6 +292,9 @@ func (d *Docx) ReplaceTable(table *Table) error {
 						//image or text
 					} else {
 						if text, ko := vvv.(*Text); ko {
+							if vv.TDM == 1 {
+								text.IsCenter = true
+							}
 							if text.IsCenter {
 								if text.Isbold {
 									XMLTable.WriteString(XMLHeadtableTDTextBC)
@@ -374,51 +361,35 @@ func replaceTableToBuffer(table *Table) (string, error) {
 		//表格中的表格为无边框形式
 		XMLTable.WriteString(XMLTableInTableHead)
 		XMLTable.WriteString(XMLTableHeadTR)
-		for thindex, rowdata := range tableHead {
-			thw := fmt.Sprintf(XMLHeadTableTDBegin, strconv.FormatInt(int64(rowdata[thindex].TDW), 10))
+		for _, rowdata := range tableHead {
+			thw := fmt.Sprintf(XMLHeadTableTDBegin, strconv.FormatInt(int64(rowdata.TDW), 10))
 			XMLTable.WriteString(thw)
-			if inline {
-				if table.Thcenter {
-					XMLTable.WriteString(XMLHeadTableTDBegin2C)
+			if table.Thcenter {
+				XMLTable.WriteString(XMLHeadTableTDBegin2C)
+			} else {
+				XMLTable.WriteString(XMLHeadTableTDBegin2)
+			}
+			if text, ok := rowdata.TData.(*Text); ok {
+				color := text.Color
+				size := text.Size
+				word := text.Words
+				var data string
+				if text.IsCenter {
+					if text.Isbold {
+						data = fmt.Sprintf(XMLHeadtableTDTextBC, color, size, size, word)
+					} else {
+						data = fmt.Sprintf(XMLHeadtableTDTextC, color, size, size, word)
+					}
 				} else {
-					XMLTable.WriteString(XMLHeadTableTDBegin2)
-				}
-			}
-			for _, rowEle := range rowdata {
-				if !inline {
-					if table.Thcenter {
-						XMLTable.WriteString(XMLHeadTableTDBegin2C)
+					if text.Isbold {
+						data = fmt.Sprintf(XMLHeadtableTDTextB, color, size, size, word)
 					} else {
-						XMLTable.WriteString(XMLHeadTableTDBegin2)
+						data = fmt.Sprintf(XMLHeadtableTDText, color, size, size, word)
 					}
 				}
-				if text, ok := rowEle.TData.(*Text); ok {
-					color := text.Color
-					size := text.Size
-					word := text.Words
-					var data string
-					if text.IsCenter {
-						if text.Isbold {
-							data = fmt.Sprintf(XMLHeadtableTDTextBC, color, size, size, word)
-						} else {
-							data = fmt.Sprintf(XMLHeadtableTDTextC, color, size, size, word)
-						}
-					} else {
-						if text.Isbold {
-							data = fmt.Sprintf(XMLHeadtableTDTextB, color, size, size, word)
-						} else {
-							data = fmt.Sprintf(XMLHeadtableTDText, color, size, size, word)
-						}
-					}
-					XMLTable.WriteString(data)
-				}
-				if !inline {
-					XMLTable.WriteString(XMLIMGtail)
-				}
+				XMLTable.WriteString(data)
 			}
-			if inline {
-				XMLTable.WriteString(XMLIMGtail)
-			}
+			XMLTable.WriteString(XMLIMGtail)
 			XMLTable.WriteString(XMLHeadTableTDEnd)
 		}
 		XMLTable.WriteString(XMLTableEndTR)
@@ -462,6 +433,9 @@ func replaceTableToBuffer(table *Table) (string, error) {
 						XMLTable.WriteString(XMLMagicFooter)
 					} else {
 						if text, ko := vvv.(*Text); ko {
+							if vv.TDM == 1 {
+								text.IsCenter = true
+							}
 							if text.IsCenter {
 								if text.Isbold {
 									XMLTable.WriteString(XMLHeadtableTDTextBC)
@@ -526,7 +500,7 @@ func replaceTableToBuffer(table *Table) (string, error) {
 }
 
 //NewTable create a table
-func NewTable(d *Docx, tbname string, inline bool, tableBody [][]*TableTD, tableHead [][]*TableTHead, headCenter bool) (*Table, error) {
+func NewTable(d *Docx, tbname string, inline bool, tableBody [][]*TableTD, tableHead []*TableTHead, headCenter bool) (*Table, error) {
 	table := &Table{}
 	table.Tbname = tbname
 	table.Inline = inline
