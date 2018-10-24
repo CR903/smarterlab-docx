@@ -1,6 +1,9 @@
 # smarterlab_doc
-golang replace docx template by word xml 
+
+1. Support docx template substitution
+2. Support OOXML
+3. Support ms-word2007 and above version
+
 
 ### DEMO ###
-
 查看 main.go
