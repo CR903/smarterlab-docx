@@ -106,9 +106,6 @@ const (
 `
 	//XMLTableHeadTR ...
 	XMLTableHeadTR = `<w:tr w14:paraId="7F912C80" w14:textId="77777777" w:rsidR="00102180" w:rsidTr="00102180">
-	<w:trPr>
-		<w:trHeight w:val="auto"/>
-	</w:trPr>
 `
 	//XMLTableTD ...
 	XMLTableTD = `<w:tc>
@@ -250,15 +247,16 @@ const (
 
 	// XMLTableGridBegin ...
 	XMLTableGridBegin = `<w:tblGrid>
-	`
+`
 
 	// XMLTableGridCol ...
 	XMLTableGridCol = `<w:gridCol w:w="%s" />
-	`
+`
 
 	// XMLTableGridEnd ...
 	XMLTableGridEnd = `
-	</w:tblGrid>`
+	</w:tblGrid>
+`
 
 	//XMLHeadTableTDEnd ...
 	XMLHeadTableTDEnd = `
